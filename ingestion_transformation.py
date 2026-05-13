@@ -44,6 +44,9 @@ EVENT_SCHEMA = StructType([
 if __name__ == '__main__':
     base_dir = os.path.dirname(os.path.abspath(__file__))
     print(f"base_dir: {base_dir}")
+    hdfs_base_uri = "hdfs://namenode"
+    cleaned_events_path = f"{hdfs_base_uri}/user/spark/data/glamira/cleaned_events"
+    checkpoint_path = f"{hdfs_base_uri}/user/spark/data/glamira/checkpoint"
 
     conf_path_file = base_dir + "/spark.conf"
 
@@ -65,6 +68,8 @@ if __name__ == '__main__':
         for key, value in kafka_conf.items()
     }
     log.info(f"kafka_conf: {safe_kafka_conf.items()}")
+    log.info(f"cleaned_events_path: {cleaned_events_path}")
+    log.info(f"checkpoint_path: {checkpoint_path}")
 
     df = spark.readStream \
         .format("kafka") \
@@ -126,9 +131,9 @@ if __name__ == '__main__':
     hdfs_query = cleaned_df \
         .writeStream \
         .format("parquet") \
-        .mode("append") \
-        .option("path", "hdfs:///user/spark/data/glamira/cleaned_events") \
-        .option("checkpointLocation", "hdfs:///user/spark/data/glamira/checkpoint") \
+        .outputMode("append") \
+        .option("path", cleaned_events_path) \
+        .option("checkpointLocation", checkpoint_path) \
         .trigger(processingTime="30 seconds") \
         .start()
 
