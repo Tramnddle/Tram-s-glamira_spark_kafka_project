@@ -4,9 +4,13 @@ channels:
   - defaults
 dependencies:
   - python=3.10.13
+  - pandas
   - pyspark=3.5.1
+  - sqlalchemy
   - conda-pack
   - ua-parser
   - user-agents
   - pip
   - pip:
+      - psycopg2-binary
+      - streamlit

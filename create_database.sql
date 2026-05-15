@@ -57,6 +57,7 @@ CREATE TABLE IF NOT EXISTS fact_log_event (
     ip TEXT,
     device_id TEXT,
     user_agent TEXT,
+    browser TEXT,
     resolution TEXT,
     api_version TEXT,
     location_key TEXT,
@@ -80,6 +81,9 @@ CREATE TABLE IF NOT EXISTS fact_log_event (
     CONSTRAINT chk_fact_log_event_count
         CHECK (event_count >= 0)
 );
+
+ALTER TABLE IF EXISTS fact_log_event
+    ADD COLUMN IF NOT EXISTS browser TEXT;
 
 CREATE TABLE IF NOT EXISTS stream_batch_log (
     query_name TEXT NOT NULL,
@@ -120,3 +124,6 @@ CREATE INDEX IF NOT EXISTS idx_fact_log_event_store_id
 
 CREATE INDEX IF NOT EXISTS idx_fact_log_event_collection
     ON fact_log_event (collection);
+
+CREATE INDEX IF NOT EXISTS idx_fact_log_event_browser
+    ON fact_log_event (browser);

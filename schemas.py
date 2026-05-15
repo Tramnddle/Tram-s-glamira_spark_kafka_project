@@ -98,6 +98,7 @@ FACT_LOG_EVENT_COLUMNS = [
     "ip",
     "device_id",
     "user_agent",
+    "browser",
     "resolution",
     "api_version",
     "location_key",

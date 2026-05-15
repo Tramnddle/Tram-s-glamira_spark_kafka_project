@@ -113,6 +113,12 @@ def ensure_batch_log_table(spark: SparkSession, runtime_conf: Dict[str, str]) ->
                 ADD COLUMN IF NOT EXISTS email TEXT
                 """.strip(),
             )
+            statement.execute(
+                f"""
+                ALTER TABLE IF EXISTS {runtime_conf['postgres_schema']}.fact_log_event
+                ADD COLUMN IF NOT EXISTS browser TEXT
+                """.strip(),
+            )
         finally:
             statement.close()
     finally:
@@ -382,6 +388,7 @@ def build_fact_log_event(base_df: DataFrame) -> DataFrame:
             "ip",
             "device_id",
             "user_agent",
+            "browser",
             "resolution",
             "api_version",
             "location_key",
