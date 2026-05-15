@@ -26,11 +26,6 @@ def _handle_env(items: list[tuple[str, str]]) -> dict[str, str]:
 
 class Config:
     def __init__(self, conf_path_file):
-        util_dir = os.path.dirname(os.path.abspath(__file__))
-        print(f"util_dir: {util_dir}")
-
-        print(f"conf_path_file: {conf_path_file}")
-
         conf = configparser.ConfigParser()
         conf.read(conf_path_file)
 

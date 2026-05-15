@@ -41,8 +41,12 @@ CREATE TABLE IF NOT EXISTS dim_location (
 );
 
 CREATE TABLE IF NOT EXISTS dim_customer (
-    customer_key TEXT PRIMARY KEY
+    customer_key TEXT PRIMARY KEY,
+    email TEXT
 );
+
+ALTER TABLE IF EXISTS dim_customer
+    ADD COLUMN IF NOT EXISTS email TEXT;
 
 CREATE TABLE IF NOT EXISTS fact_log_event (
     date_key TEXT,
@@ -77,6 +81,13 @@ CREATE TABLE IF NOT EXISTS fact_log_event (
         CHECK (event_count >= 0)
 );
 
+CREATE TABLE IF NOT EXISTS stream_batch_log (
+    query_name TEXT NOT NULL,
+    batch_id BIGINT NOT NULL,
+    processed_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (query_name, batch_id)
+);
+
 CREATE UNIQUE INDEX IF NOT EXISTS ux_dim_date_date
     ON dim_date (date);
 
@@ -97,6 +108,9 @@ CREATE INDEX IF NOT EXISTS idx_fact_log_event_location_key
 
 CREATE INDEX IF NOT EXISTS idx_fact_log_event_customer_key
     ON fact_log_event (customer_key);
+
+CREATE INDEX IF NOT EXISTS idx_dim_customer_email
+    ON dim_customer (email);
 
 CREATE INDEX IF NOT EXISTS idx_fact_log_event_event_timestamp
     ON fact_log_event (event_timestamp);
