@@ -417,10 +417,6 @@ def build_table_dataframes(base_df: DataFrame) -> Dict[str, DataFrame]:
     }
 
 
-def summarize_table_counts(table_dfs: Dict[str, DataFrame], table_names: List[str]) -> str:
-    return ", ".join(f"{table_name}={table_dfs[table_name].count()}" for table_name in table_names)
-
-
 def process_microbatch(batch_df: DataFrame, batch_id: int, runtime_conf: Dict[str, str]) -> None:
     spark = batch_df.sparkSession
     log = Log4j(spark)
@@ -448,7 +444,7 @@ def process_microbatch(batch_df: DataFrame, batch_id: int, runtime_conf: Dict[st
 
     log.info(
         f"batch_id={batch_id}: input_rows={input_row_count}, "
-        f"{summarize_table_counts(table_dfs, non_empty_table_names)}"
+        f"non_empty_tables={','.join(non_empty_table_names)}"
     )
 
     staged_tables: List[str] = []

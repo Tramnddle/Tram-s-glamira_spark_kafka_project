@@ -76,6 +76,13 @@ def run_query(database_url: str, sql: str, params: dict | None = None) -> pd.Dat
         return pd.read_sql(text(sql), connection, params=params or {})
 
 
+@st.fragment(run_every=60)
+def auto_refresh_dashboard() -> None:
+    if st.session_state.get("_auto_refresh_initialized", False):
+        st.rerun()
+    st.session_state["_auto_refresh_initialized"] = True
+
+
 def build_query_parts(schema: str) -> dict[str, str]:
     safe_schema = safe_identifier(schema)
 
@@ -421,6 +428,7 @@ def render_hourly_line_chart(
 
 def main() -> None:
     st.set_page_config(page_title="Glamira Analytics Dashboard", layout="wide")
+    auto_refresh_dashboard()
     st.title("Glamira Product View Dashboard")
     st.caption(
         "The dashboard reads from the Postgres warehouse created by the Spark pipeline "
